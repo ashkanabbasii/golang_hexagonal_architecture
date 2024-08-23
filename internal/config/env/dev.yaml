@@ -1,0 +1,31 @@
+env: "dev"
+name: "voucher-services"
+server:
+  ports:
+    external: "9000"
+    internal: "9001"
+  debug: true
+#DATABASE
+db:
+  postgres:
+    name: "voucher"
+    host: "localhost"
+    port: "5432"
+    user: "pgsql"
+    password: "123456"
+    debug: true
+    maxIdleConn: "5"
+    maxOpenConn: "10"
+    migrationsPath: "internal/infrastructure/db/migrations"
+app:
+  cors:
+    allow-origins: "*"
+    allow-methods: "GET,POST,PUT,DELETE,OPTIONS"
+    allow-headers: "Accept,Authorization,Content-Type,Origin,channel,product,x-auth-id,experiment-keys,user-tracking-key"
+    allow-credentials: "true"
+  consumer-group-hotel: "hotel.search.consumer"
+  consumer-group-villa: "villa.search.consumer"
+api:
+  wallet:
+    internal: "http://localhost:9001"
+    external: "http://localhost:9000"

@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: voucher_db
+    environment:
+      POSTGRES_DB: voucher
+      POSTGRES_USER: pgsql
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432" # Maps host port 5432 to container port 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

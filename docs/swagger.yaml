@@ -1,0 +1,189 @@
+definitions:
+  api.Error:
+    properties:
+      code:
+        $ref: '#/definitions/serr.ErrorCode'
+      message:
+        type: string
+      trace_id:
+        type: string
+    type: object
+  dto.CreateVoucherRequest:
+    properties:
+      amount:
+        type: integer
+      code:
+        type: string
+      description:
+        type: string
+      expiry_date:
+        type: string
+      usage_limit:
+        type: integer
+    required:
+    - amount
+    - code
+    - description
+    - expiry_date
+    - usage_limit
+    type: object
+  dto.RedeemVoucherRequest:
+    properties:
+      code:
+        type: string
+      user_id:
+        type: string
+    required:
+    - code
+    - user_id
+    type: object
+  entity.VoucherRedemptionHistory:
+    properties:
+      amount:
+        description: Amount of voucher
+        type: integer
+      id:
+        description: Unique identifier for the redemption record
+        type: integer
+      redeemedAt:
+        description: When the voucher was Redeemed
+        type: string
+      userID:
+        description: ID of the user who Redeemed the voucher
+        type: string
+      voucherID:
+        description: ID of the Redeemed voucher
+        type: integer
+    type: object
+  serr.ErrorCode:
+    enum:
+    - INTERNAL
+    - INVALID_VOUCHER
+    - REACH_LIMIT
+    - INVALID_USER
+    - INVALID_TIME
+    - INVALID_INPUT
+    type: string
+    x-enum-varnames:
+    - ErrInternal
+    - ErrInvalidVoucher
+    - ErrReachLimit
+    - ErrInvalidUser
+    - ErrInvalidTime
+    - ErrInvalidInput
+info:
+  contact: {}
+paths:
+  /vouchers:
+    post:
+      consumes:
+      - application/json
+      description: Create a new voucher with code, description, usage limit, and expiry
+        date.
+      parameters:
+      - description: Create Voucher Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateVoucherRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Create a new voucher
+      tags:
+      - Vouchers
+  /vouchers/{code}/history:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of voucher redemption histories filtered by voucher
+        code.
+      parameters:
+      - description: Voucher Code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.VoucherRedemptionHistory'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: List redeemed voucher histories by code
+      tags:
+      - Vouchers
+  /vouchers/redeem:
+    patch:
+      consumes:
+      - application/json
+      description: Redeem a voucher code for a user.
+      parameters:
+      - description: Redeem Voucher Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RedeemVoucherRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Redeem a voucher
+      tags:
+      - Vouchers
+  /vouchers/users/{user_id}/history:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of voucher redemption histories filtered by user ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.VoucherRedemptionHistory'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: List redeemed voucher histories by user ID
+      tags:
+      - Vouchers
+swagger: "2.0"
