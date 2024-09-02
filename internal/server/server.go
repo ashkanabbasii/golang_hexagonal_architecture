@@ -67,7 +67,7 @@ func (s *Server) Run(port string) {
 }
 
 func (s *Server) setDoc() {
-	docs.SwaggerInfo.Title = "Arvan Voucher Api"
+	docs.SwaggerInfo.Title = "Voucher Api"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = config.ServerAddress()
 }

@@ -129,7 +129,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entity.VoucherRedemptionHistory"
+                                "$ref": "#/definitions/dto.VoucherRedemptionHistoryResponse"
                             }
                         }
                     },
@@ -170,7 +170,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entity.VoucherRedemptionHistory"
+                                "$ref": "#/definitions/dto.VoucherRedemptionHistoryResponse"
                             }
                         }
                     },
@@ -241,27 +241,22 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.VoucherRedemptionHistory": {
+        "dto.VoucherRedemptionHistoryResponse": {
             "type": "object",
             "properties": {
                 "amount": {
-                    "description": "Amount of voucher",
                     "type": "integer"
                 },
                 "id": {
-                    "description": "Unique identifier for the redemption record",
                     "type": "integer"
                 },
-                "redeemedAt": {
-                    "description": "When the voucher was Redeemed",
+                "redeemed_at": {
                     "type": "string"
                 },
-                "userID": {
-                    "description": "ID of the user who Redeemed the voucher",
+                "user_id": {
                     "type": "string"
                 },
-                "voucherID": {
-                    "description": "ID of the Redeemed voucher",
+                "voucher_id": {
                     "type": "integer"
                 }
             }

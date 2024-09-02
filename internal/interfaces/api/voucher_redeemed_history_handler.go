@@ -22,7 +22,7 @@ func NewVoucherRedeemedHistoryHandler(voucherAppService *services.VoucherRedempt
 // @Accept       json
 // @Produce      json
 // @Param        code path string true "Voucher Code"
-// @Success      200  {array}   entity.VoucherRedemptionHistory
+// @Success      200  {array}   dto.VoucherRedemptionHistoryResponse
 // @Failure      500  {object}  Error
 // @Router       /vouchers/{code}/history [get]
 func (h *VoucherRedeemedHistoryHandler) ListRedeemedHistoriesByCode(c *gin.Context) {
@@ -44,7 +44,7 @@ func (h *VoucherRedeemedHistoryHandler) ListRedeemedHistoriesByCode(c *gin.Conte
 // @Accept       json
 // @Produce      json
 // @Param        user_id path string true "User ID"
-// @Success      200  {array}   entity.VoucherRedemptionHistory
+// @Success      200  {array}   dto.VoucherRedemptionHistoryResponse
 // @Failure      500  {object}  Error
 // @Router       /vouchers/users/{user_id}/history [get]
 func (h *VoucherRedeemedHistoryHandler) ListRedeemedHistoriesByUser(c *gin.Context) {

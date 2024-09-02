@@ -3,7 +3,7 @@ package main
 import (
 	"go.uber.org/fx"
 	"voucher/internal/config"
-	service2 "voucher/internal/core/application/services"
+	appService "voucher/internal/core/application/services"
 	"voucher/internal/core/domain/services"
 	"voucher/internal/infrastructure/db"
 	"voucher/internal/infrastructure/persistence"
@@ -30,8 +30,8 @@ func main() {
 			services.NewVoucherRedeemedHistoryService,
 
 			// application services
-			service2.NewVoucherApplicationService,
-			service2.NewVoucherRedemptionHistoryApplicationService,
+			appService.NewVoucherApplicationService,
+			appService.NewVoucherRedemptionHistoryApplicationService,
 
 			// handlers
 			api.NewVoucherCodeHandler,

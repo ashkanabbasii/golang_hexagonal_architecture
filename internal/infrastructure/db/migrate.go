@@ -16,7 +16,7 @@ func Migrate(db *sql.DB) error {
 		return fmt.Errorf("failed to get db instance: %w", err)
 	}
 	m, err := migrate.NewWithDatabaseInstance(
-		fmt.Sprintf("file://%s", config.DBMigrationsPath()), "postgres", driver)
+		fmt.Sprintf("file://%s", config.DBMigrationsPath()), config.DBName(), driver)
 	if err != nil {
 		return fmt.Errorf("failed to initialize db migrations: %w", err)
 	}

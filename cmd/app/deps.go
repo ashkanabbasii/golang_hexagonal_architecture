@@ -5,6 +5,7 @@ import (
 	"log"
 	"voucher/cmd/clients"
 	"voucher/internal/config"
+	"voucher/internal/core/application/ports"
 	"voucher/internal/infrastructure/db"
 	"voucher/internal/server"
 )
@@ -20,7 +21,7 @@ func postgresDB() *sql.DB {
 	return psql
 }
 
-func externalClients() *clients.WalletClient {
+func externalClients() ports.WalletPort {
 	walletClient := clients.NewWallet(config.APIWalletInternal(), config.APIWalletExternal())
 
 	return walletClient

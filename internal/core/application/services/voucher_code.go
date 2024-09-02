@@ -5,7 +5,8 @@ import (
 	"database/sql"
 	"net/http"
 	"voucher/cmd/clients"
-	ports2 "voucher/internal/core/application/ports"
+	"voucher/internal/core/application/ports"
+	"voucher/internal/core/domain/entity"
 	"voucher/internal/infrastructure/db"
 	api "voucher/internal/interfaces/api/dto"
 	"voucher/pkg/serr"
@@ -13,16 +14,16 @@ import (
 
 // VoucherApplicationService provides application logic for vouchers.
 type VoucherApplicationService struct {
-	voucherCodeDomainService       ports2.VoucherCodeServicePort
-	redemptionHistoryDomainService ports2.VoucherRedeemedHistoryServicePort
-	walletClient                   ports2.WalletPort
+	voucherCodeDomainService       ports.VoucherCodeServicePort
+	redemptionHistoryDomainService ports.VoucherRedeemedHistoryServicePort
+	walletClient                   ports.WalletPort
 }
 
 // NewVoucherApplicationService creates a new instance of VoucherApplicationService.
 func NewVoucherApplicationService(
-	voucherDomainService ports2.VoucherCodeServicePort,
-	redemptionHistoryDomainService ports2.VoucherRedeemedHistoryServicePort,
-	walletClient ports2.WalletPort,
+	voucherDomainService ports.VoucherCodeServicePort,
+	redemptionHistoryDomainService ports.VoucherRedeemedHistoryServicePort,
+	walletClient ports.WalletPort,
 
 ) *VoucherApplicationService {
 	return &VoucherApplicationService{
@@ -51,25 +52,17 @@ func (s *VoucherApplicationService) RedeemVoucher(ctx context.Context, request *
 		return serr.ValidationErr("VoucherApplicationService.RedeemVoucher",
 			"you've been reach to the limit", serr.ErrReachLimit)
 	}
+	var voucher *entity.VoucherCode
 	// Call the domain services method to redeem the voucher by transaction
 	err = db.Transaction(ctx, sql.LevelReadCommitted, func(tx *sql.Tx) error {
 		// redeem a voucher
-		v, err := s.voucherCodeDomainService.RedeemVoucher(ctx, request.Code, tx)
+		voucher, err = s.voucherCodeDomainService.RedeemVoucher(ctx, request.Code, tx)
 		if err != nil {
 			return err
 		}
 
 		// record a redemption
-		err = s.redemptionHistoryDomainService.RecordRedemption(ctx, v.ID, request.UserID, tx)
-		if err != nil {
-			return err
-		}
-
-		// increase user wallet
-		err = s.walletClient.IncreaseWalletBalance(ctx, &clients.UpdateWalletBalanceRequest{
-			UserID: request.UserID,
-			Amount: float64(v.Amount),
-		})
+		err = s.redemptionHistoryDomainService.RecordRedemption(ctx, voucher.ID, request.UserID, tx)
 		if err != nil {
 			return err
 		}
@@ -80,6 +73,16 @@ func (s *VoucherApplicationService) RedeemVoucher(ctx context.Context, request *
 	if err != nil {
 		return serr.ServiceErr("VoucherApplicationService.RedeemVoucher",
 			err.Error(), err, http.StatusInternalServerError)
+	}
+
+	//todo: implement API call failure here
+	// increase user wallet
+	err = s.walletClient.IncreaseWalletBalance(ctx, &clients.UpdateWalletBalanceRequest{
+		UserID: request.UserID,
+		Amount: float64(voucher.Amount),
+	})
+	if err != nil {
+		return err
 	}
 
 	return nil

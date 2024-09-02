@@ -37,22 +37,17 @@ definitions:
     - code
     - user_id
     type: object
-  entity.VoucherRedemptionHistory:
+  dto.VoucherRedemptionHistoryResponse:
     properties:
       amount:
-        description: Amount of voucher
         type: integer
       id:
-        description: Unique identifier for the redemption record
         type: integer
-      redeemedAt:
-        description: When the voucher was Redeemed
+      redeemed_at:
         type: string
-      userID:
-        description: ID of the user who Redeemed the voucher
+      user_id:
         type: string
-      voucherID:
-        description: ID of the Redeemed voucher
+      voucher_id:
         type: integer
     type: object
   serr.ErrorCode:
@@ -122,7 +117,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entity.VoucherRedemptionHistory'
+              $ref: '#/definitions/dto.VoucherRedemptionHistoryResponse'
             type: array
         "500":
           description: Internal Server Error
@@ -177,7 +172,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entity.VoucherRedemptionHistory'
+              $ref: '#/definitions/dto.VoucherRedemptionHistoryResponse'
             type: array
         "500":
           description: Internal Server Error

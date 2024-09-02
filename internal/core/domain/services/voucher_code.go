@@ -67,7 +67,6 @@ func (s *VoucherCodeService) RedeemVoucher(ctx context.Context, code string, tx 
 	if err != nil {
 		return nil, err
 	}
-
 	if err := s.persistencePort.UpdateVoucher(ctx, voucher, tx); err != nil {
 		return nil, err
 	}

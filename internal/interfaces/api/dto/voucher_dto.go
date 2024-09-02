@@ -1,6 +1,9 @@
 package dto
 
-import "time"
+import (
+	"time"
+	"voucher/internal/core/domain/entity"
+)
 
 type (
 	CreateVoucherRequest struct {
@@ -23,4 +26,22 @@ type (
 	ListRedeemVoucherByUserIDRequest struct {
 		UserID string `json:"user_id" validate:"required"`
 	}
+
+	VoucherRedemptionHistoryResponse struct {
+		ID         int       `json:"id"`
+		VoucherID  int       `json:"voucher_id"`
+		Amount     int       `json:"amount"`
+		RedeemedAt time.Time `json:"redeemed_at"`
+		UserID     string    `json:"user_id"`
+	}
 )
+
+func ToVoucherRedemptionHistoryEntity(entity *entity.VoucherRedemptionHistory) *VoucherRedemptionHistoryResponse {
+	return &VoucherRedemptionHistoryResponse{
+		ID:         entity.ID,
+		VoucherID:  entity.VoucherID,
+		Amount:     entity.Amount,
+		RedeemedAt: entity.RedeemedAt,
+		UserID:     entity.UserID,
+	}
+}
